@@ -18,11 +18,11 @@ class MinhaInterface:
 		login_frame = tk.Frame(self.main_frame, bg = "lightblue")
 		login_frame.place(relheight ="0.6",relwidth="0.4", relx=0.5, rely=0.5, anchor = tk.CENTER)
 		#configurate the columns
-		login_frame.grid_rowconfigure( 0, weight = 1 )
-		login_frame.grid_rowconfigure( 1, weight = 1 )
-		login_frame.grid_rowconfigure( 2, weight = 1 )
-		login_frame.grid_rowconfigure( 3, weight = 1 )
-		login_frame.grid_rowconfigure( 4, weight = 1 )
+		login_frame.grid_rowconfigure( 0, weight = 1)
+		login_frame.grid_rowconfigure( 1, weight = 0)
+		login_frame.grid_rowconfigure( 2, weight = 0)
+		login_frame.grid_rowconfigure( 3, weight = 1)
+		login_frame.grid_rowconfigure( 4, weight = 1)
 		#configurate the row
 		login_frame.grid_columnconfigure(0, weight=1)
 		login_frame.grid_columnconfigure(1, weight=1)
@@ -31,13 +31,13 @@ class MinhaInterface:
 		login_frame.grid_columnconfigure(4, weight=1)
 		login_frame.grid_columnconfigure(5, weight=1)
 		#configure labels
-		tk.Label(login_frame, text = "Username: ", bg="lightblue", font=self.main_font).grid(row=1, column = 2, pady = 20, padx=10)
-		tk.Label(login_frame, text = "Password: ", bg="lightblue", font=self.main_font).grid(row=2, column = 2, pady = 20, padx=10)
+		tk.Label(login_frame, text = "Username: ", bg="lightblue", font=self.main_font).grid(row=1, column = 2, pady = 20, padx=10, sticky="nsew")
+		tk.Label(login_frame, text = "Password: ", bg="lightblue", font=self.main_font).grid(row=2, column = 2, pady = 20, padx=10, sticky="nsew")
 		#configuring inputs
-		username_entry = tk.Entry( login_frame, width = 20, font=self.main_font )
-		password_entry = tk.Entry( login_frame, show = "*", width = 20, font=self.main_font )
-		username_entry.grid( row = 1, column = 3, pady = 20, padx=0)
-		password_entry.grid( row = 2, column = 3, pady = 20, padx=0)
+		username_entry = tk.Entry( login_frame, width = 20, font=self.main_font, justify="center" )
+		password_entry = tk.Entry( login_frame, show = "*", font=self.main_font )
+		username_entry.grid( row = 1, column = 3, pady = 10, padx=0, sticky="nsew")
+		password_entry.grid( row = 2, column = 3, pady = 10, padx=0, sticky="nsew")
 		#Configuring button
 		button = tk.Button( login_frame, text = "Confirmar" )
 		button.grid( row = 3, column = 2, columnspan = 2, pady = 5 )
