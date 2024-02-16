@@ -89,3 +89,42 @@ class MinhaInterface:
         self.main_frame.destroy()
         self.main_frame = tk.Frame( self.janela, bg = "white" )
         self.main_frame.place(relheight="1.0", relwidth="0.8", relx=0.20)
+        self.city_register()
+    def main_frame_setup( self ):
+        try:
+            child_frames = self.main_frame.winfo_children()
+            for child in child_frames:
+                child.destroy()
+                # create a city register frame
+            register_frame = tk.Frame( self.main_frame, bg = "lightblue" )
+            register_frame.place( relwidth = "1.0", relheight = "0.8", relx = 0.5, rely = 0.5,
+                                      anchor = tk.CENTER )
+            #configuring rows
+            register_frame.grid_rowconfigure( 0, weight = 1 )
+            register_frame.grid_rowconfigure( 1, weight = 1 )
+            register_frame.grid_rowconfigure( 2, weight = 0 )
+            register_frame.grid_rowconfigure( 3, weight = 1 )
+            register_frame.grid_rowconfigure( 4, weight = 1 )
+            #configuring columns
+            register_frame.grid_columnconfigure( 0, weight = 1 )
+            register_frame.grid_columnconfigure( 1, weight = 1 )
+            register_frame.grid_columnconfigure( 2, weight = 1 )
+            register_frame.grid_columnconfigure( 3, weight = 0 )
+            register_frame.grid_columnconfigure( 4, weight = 1 )
+            register_frame.grid_columnconfigure( 5, weight = 1 )
+            register_frame.grid_columnconfigure( 6, weight = 1 )
+            # Creating a form-holder
+        except:
+            pass
+    def city_register( self ):
+        #Set_up the main frame
+        self.main_frame_setup()
+
+
+    def model_register( self ):
+        self.main_frame_setup()
+        pass
+
+    def landing_page_generator( self ):
+        self.main_frame_setup()
+        pass
