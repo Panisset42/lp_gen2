@@ -1,5 +1,5 @@
 # main.py
-from layout import MinhaInterface, EventPublisher
+from archives.python.layout import MinhaInterface, EventPublisher
 
 
 def handle_login_data(username, password, login_frame):
