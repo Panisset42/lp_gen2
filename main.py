@@ -2,43 +2,38 @@
 from Archives.python.layout import MinhaInterface, EventPublisher
 from Archives.python.models.OneForm import OneForm
 from Archives.python.driver import DriveMethods
-import unicodedata
+from Archives.python.data_treatment import City
+from Archives.python.data_treatment import Content
+from tkinter import messagebox
 
 
-def remove_accents(input_str):
-    nfkd_form = unicodedata.normalize('NFKD', input_str)
-    return ''.join([c for c in nfkd_form if not unicodedata.combining(c)])
+def error_popup(content):
+    messagebox.showinfo("ATENÇÃO", f"Você esqueceu de preencher o campo: {content}")
 
 
-month_dict = {'01': 'Janeiro', '02': 'Fevereiro', '03': 'Março', '04': 'Abril', '05': 'Maio',
-              '06': 'Junho',
-              '07': 'Julho', '08': 'Agosto', '09': 'Setembro', '10': 'Outubro', '11': 'Novembro',
-              '12': 'Dezembro'}
-
-
-def input_generator():
-    header = "link,model,page_name,city,date,link_tk,active_name\n"
-    data = [header]
-
-    with open("Archives/Assets/Data/city.csv", "r", encoding="utf-8") as f:
-        tmp = f.readlines()[1:]  # Skip the header line
-        print(tmp)
-
-    for line in tmp:
-        city, date, model, link = map(str.strip, line.split(','))
-        month, day, year = date.split('/')
-        page_name = f"[{month_dict[month][:3]}/{year}] [{model}] [{city}] PALESTRA ABERTA - AUTO".upper()
-        link_tk = f"https://palestra.polozi.com.br/obg-{remove_accents(city.lower().replace(' ', '-'))}-{month_dict[month][:3].lower()}"
-        active_name = f"{day}/{month}/{year} - {city.lower()} - palestra aberta"
-        content = f"{link},{model},{page_name},{city},{date},{link_tk},{active_name}\n"
-        print(content)
-        data.append(content)
-
-    with open("Archives/Assets/Data/input.csv", "w", encoding="utf-8") as f:
-        f.writelines(data)
-
-
-def handle_city_register(city_name, city_date, model, link):
+def handle_city_register(city_name, city_date, model, link, screen):
+    if Content.is_empty(city_name):
+        error_popup("Cidade")
+        MinhaInterface.city_register(screen)
+        return
+    elif Content.is_empty(city_date):
+        error_popup("Data do evento")
+        MinhaInterface.city_register(screen)
+        return
+    elif Content.is_empty(model):
+        error_popup("Modelo")
+        MinhaInterface.city_register(screen)
+        return
+    elif Content.is_empty(link):
+        error_popup("Link")
+        MinhaInterface.city_register(screen)
+        return
+    month, day, year = city_date.split("/")
+    if int(day) < 10:
+        day = f"0{day}"
+    if int(month) < 10:
+        month = f"0{month}"
+    city_date = f"{month}/{day}/{year}"
     data = []
     address = "Archives/Assets/Data/city.csv"
     with open(address, "r", encoding="utf-8") as f:
@@ -46,11 +41,11 @@ def handle_city_register(city_name, city_date, model, link):
         for line in tmp_data:
             if line.strip() != "":
                 data.append(line)
-    new_data = f"\n{city_name},{city_date},{model},{link}"
+    new_data = f"\n{Content.sanitize_input(city_name)},{Content.sanitize_input(city_date)},{Content.sanitize_input(model)},{Content.sanitize_input(link)}"
     data.append(new_data)
     with open(address, "w", encoding="utf-8") as f:
         f.writelines(data)
-    input_generator()
+    City.input_generator()
 
 
 def handle_model_register(model_name, model_link, model_archive):
@@ -60,7 +55,7 @@ def handle_model_register(model_name, model_link, model_archive):
 
 
 def handle_login_attempt(username, password):
-    if username == "asd" and password == "asd":
+    if username == "captacao" and password == "autenticar2024":
         app.main_screen()
         EventPublisher.unsubscribe("login_attempt", handle_login_attempt)
 
@@ -79,7 +74,7 @@ def handle_lp_generation(data):
         handler.publish_page(line[3].strip()[:-5])
 
 
-input_generator()
+City.input_generator()
 
 EventPublisher.subscribe("login_attempt", handle_login_attempt)
 EventPublisher.subscribe("city_register_clicked", handle_city_register)

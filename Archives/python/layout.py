@@ -160,21 +160,14 @@ class MinhaInterface:
     def city_register_clicked(self):
         # getting data
         city_name = self.entry_name.get()
-        tmp_event_date = str(self.entry_date.get())
-        month, day, year = tmp_event_date.split("/")
-        if int(day) < 10:
-            day = f"0{day}"
-        if int(month) < 10:
-            month = f"0{month}"
-
-        event_date = f"{month}/{day}/{year}"
+        event_date = str(self.entry_date.get())
         model = self.options.get()
         link = self.entry_link.get()
         # cleaning the data from screen
         self.entry_name.delete(0, tk.END)
         self.entry_date.delete(0, tk.END)
         # send data to main archive
-        EventPublisher.publish("city_register_clicked", city_name, event_date, model, link)
+        EventPublisher.publish("city_register_clicked", city_name, event_date, model, link, self)
 
     def model_register(self):
         # Set_up the main frame
