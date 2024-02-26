@@ -161,12 +161,11 @@ class MinhaInterface:
         # getting data
         city_name = self.entry_name.get()
         tmp_event_date = str(self.entry_date.get())
-        month,day,year = tmp_event_date.split("/")
+        month, day, year = tmp_event_date.split("/")
         if int(day) < 10:
             day = f"0{day}"
         if int(month) < 10:
-           month = f"0{month}"
-
+            month = f"0{month}"
 
         event_date = f"{month}/{day}/{year}"
         model = self.options.get()
