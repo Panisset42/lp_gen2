@@ -167,6 +167,7 @@ class MinhaInterface:
         if int(month) < 10:
            month = f"0{month}"
 
+
         event_date = f"{month}/{day}/{year}"
         model = self.options.get()
         link = self.entry_link.get()
