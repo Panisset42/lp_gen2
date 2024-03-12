@@ -39,7 +39,6 @@ class City:
         y = f"20{y}"
         # generating the active campaign tag name
         cls.actual_cities.append(f"\n{city.strip()},{d}/{m}/{y},{d}/{m}/{y} - {city} - PALESTRA ABERTA")
-        print(cls.actual_cities)
         # writing the data
         with open("Archives/Assets/Data/city.csv", "w", encoding="utf-8") as f:
             f.writelines(cls.actual_cities)
@@ -58,16 +57,14 @@ class City:
 
         with open("Archives/Assets/Data/city.csv", "r", encoding="utf-8") as f:
             tmp = f.readlines()[1:]  # Skip the header line
-            print(tmp)
 
         for line in tmp:
             city, date, model, link = map(str.strip, line.split(','))
             month, day, year = date.split('-')
             page_name = f"[{cls.month_dict[month][:3]}/{year}] [{model}] [{city}] PALESTRA ABERTA - AUTO".upper()
-            link_tk = f"https://palestra.polozi.com.br/obg-{cls.remove_accents(city.lower().replace(' ', '-'))}-{cls.month_dict[month][:3].lower()}"
+            link_tk = f"https://palestra.polozi.com.br/obg-{cls.remove_accents(city[:-5].strip().lower().replace(' ', '-').replace('/', '-'))}-{cls.month_dict[month][:3].lower()}"
             active_name = f"{day}/{month}/{year} - {city.lower()} - palestra aberta"
             content = f"{link},{model},{page_name},{city},{date},{link_tk},{active_name}\n"
-            print(content)
             data.append(content)
 
         with open("Archives/Assets/Data/input.csv", "w", encoding="utf-8") as f:

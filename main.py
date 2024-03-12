@@ -5,27 +5,33 @@ from Archives.python.driver import DriveMethods
 from Archives.python.data_treatment import City
 from Archives.python.data_treatment import Content
 from tkinter import messagebox
-
+from time import sleep
+from selenium.common.exceptions import TimeoutException
 
 def error_popup(content):
-    messagebox.showinfo("ATENÇÃO", f"Você esqueceu de preencher o campo: {content}")
+    messagebox.showinfo("ATENÇÃO", f"Você esqueceu de preencher: {content}")
+
+def handle_login_attempt(username, password):
+    if username == "captacao" and password == "autenticar2024":
+        app.main_screen()
+        EventPublisher.unsubscribe("login_attempt", handle_login_attempt)
 
 
 def handle_city_register(city_name, city_date, model, link, screen):
     if Content.is_empty(city_name):
-        error_popup("Cidade")
+        error_popup("O campo cidade")
         MinhaInterface.city_register(screen)
         return
     elif Content.is_empty(city_date):
-        error_popup("Data do evento")
+        error_popup("O campo data do evento")
         MinhaInterface.city_register(screen)
         return
     elif Content.is_empty(model):
-        error_popup("Modelo")
+        error_popup("O campo modelo")
         MinhaInterface.city_register(screen)
         return
     elif Content.is_empty(link):
-        error_popup("Link")
+        error_popup("O campo link")
         MinhaInterface.city_register(screen)
         return
     month, day, year = city_date.split("/")
@@ -41,7 +47,7 @@ def handle_city_register(city_name, city_date, model, link, screen):
         for line in tmp_data:
             if line.strip() != "":
                 data.append(line)
-    new_data = f"\n{Content.sanitize_input(city_name)},{Content.sanitize_input(city_date)},{Content.sanitize_input(model)},{Content.sanitize_input(link)}"
+    new_data = f"\n{Content.sanitize_input(city_name)},{Content.sanitize_input(city_date)},{model},{link}"
     data.append(new_data)
     with open(address, "w", encoding="utf-8") as f:
         f.writelines(data)
@@ -54,24 +60,38 @@ def handle_model_register(model_name, model_link, model_archive):
     print(model_archive)
 
 
-def handle_login_attempt(username, password):
-    if username == "captacao" and password == "autenticar2024":
-        app.main_screen()
-        EventPublisher.unsubscribe("login_attempt", handle_login_attempt)
-
-
 def handle_lp_generation(data):
-    drive = DriveMethods.drive_gen()
+    with open("Archives/Assets/Data/city.csv", "r", encoding="utf-8") as f:
+        city = f.readlines()
+    if not any(data):
+        error_popup("Cadastro de cidades")
+        return
+    cookies = DriveMethods.drive_gen()
+
     for line in data:
-        print(line)
-        handler = OneForm(drive)
-        handler.page_clone(line[0])
-        handler.locate_cloned_page()
-        handler.rename_page(line[2])
-        handler.edit_page(line)
-        handler.insert_thanks_page_link(line[5])
-        handler.config_active_campaign(line[6], line[4])
-        handler.publish_page(line[3].strip()[:-5])
+        try:
+            new_drive = DriveMethods.clean_driver(cookies)
+            print(line)
+            handler = OneForm(new_drive)
+            handler.page_clone(line[0])
+            handler.locate_cloned_page()
+            handler.rename_page(line[2])
+            handler.edit_page(line)
+            handler.insert_thanks_page_link(line[5])
+            handler.config_active_campaign(line[6], line[4])
+            handler.publish_page(line[3].strip()[:-5])
+
+            # Remove the line containing the city name from the "city" list
+            city = [c for c in city if line[3] not in c]
+
+            # Write the modified "city" list back to the "city.csv" file
+            with open("Archives/Assets/Data/city.csv", "w", encoding="utf-8") as f:
+                f.writelines(city)
+            new_drive.quit()
+        except TimeoutException as e:
+            with open("Erros.log",'a', encoding="utf-8") as f:
+                f.write(f"{line[3]}\n\n{str(e)}\n\n\n\n\n")
+                continue
 
 
 City.input_generator()
@@ -84,3 +104,4 @@ EventPublisher.subscribe("lp_generation_confirm_button_pressed", handle_lp_gener
 app = MinhaInterface()
 app.login_screen()
 app.janela.mainloop()
+

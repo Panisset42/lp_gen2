@@ -54,7 +54,7 @@ class OneForm:
 
     @classmethod
     def input_info(cls, data):
-        day, month, year = data[4].split('/')
+        month, day, year = data[4].split('-')
         pyperclip.copy(f'{day} de {cls.month_dict[month].capitalize()}')
         pyautogui.hotkey('ctrl', 'a')
         pyautogui.write('Dia: ')
@@ -154,7 +154,7 @@ class OneForm:
 
     @classmethod
     def config_active_campaign(cls, active, date):
-        day, month, year = date.split("/")
+        month, day,  year = date.split("-")
         #open the activeCampaign connectio editor
         cls.click(By.XPATH, '/html/body/div[3]/div[2]/div[3]/div[2]/div[2]/div[1]/div[8]/div[1]/div/div[2]/div[1]')
         sleep(3)
@@ -169,7 +169,7 @@ class OneForm:
         # pyperclip.copy(active)
         # pyautogui.hotkey('ctrl', 'v')
         sleep(25)
-        list_name = f"PALESTRA ABERTA - {cls.month_dict[month].upper()}/{year}".strip()
+        list_name = f"PALESTRA ABERTA - {cls.month_dict[month][:3].upper()}/{year}".strip()
         print(list_name)
         element = WebDriverWait(cls.drive, 120).until(EC.presence_of_element_located(
             (By.XPATH, f"//*[contains(text(), '{list_name}')]")))
