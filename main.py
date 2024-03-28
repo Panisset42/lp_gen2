@@ -80,7 +80,7 @@ def handle_lp_generation(data):
             handler.edit_page(line)
             handler.insert_thanks_page_link(line[5])
             handler.config_active_campaign(line[6], line[4])
-            handler.publish_page(line[3].strip()[:-5])
+            #handler.publish_page(line[3].strip()[:-5])
 
             # Remove the line containing the city name from the "city" list
             city = [c for c in city if line[3] not in c]

@@ -6,6 +6,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import UnexpectedAlertPresentException, TimeoutException
+from selenium.webdriver.common.action_chains import ActionChains
 
 
 class OneForm:
@@ -26,10 +28,30 @@ class OneForm:
 
     @classmethod
     def click(cls, by, path, timer=5):
-        temp_wait = WebDriverWait(cls.drive, timer)
-        sleep(1)
-        element = temp_wait.until(EC.presence_of_element_located((by, path)))
-        element.click()
+        try:
+            temp_wait = WebDriverWait(cls.drive, timer)
+            sleep(1)
+            element = temp_wait.until(EC.presence_of_element_located((by, path)))
+            cls.actions.click(element).perform()
+            cls.actions.reset_actions()
+        except UnexpectedAlertPresentException:
+            # Handle unexpected alert
+            try:
+                alert = cls.wait.until(EC.alert_is_present())
+                if alert:
+                    alert_text = alert.text
+                    print("Alert Text:", alert_text)
+                    alert.accept()  # Dismiss the alert
+                    # Handle the alert text as needed
+            except TimeoutException:
+                print("Timeout while waiting for alert.")
+                # Handle the timeout as needed
+
+        except TimeoutException:
+            print("Timeout while waiting for element.")
+
+        except Exception as e:
+            print("An error occurred:", e)
 
     @classmethod
     def page_clone(cls, link):
