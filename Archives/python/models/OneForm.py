@@ -2,7 +2,6 @@ from time import sleep
 
 import pyautogui
 import pyperclip
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -28,28 +27,32 @@ class OneForm:
 
     @classmethod
     def click(cls, by, path, timer=5):
+        temp_wait = WebDriverWait(cls.drive, timer)
         try:
-            temp_wait = WebDriverWait(cls.drive, timer)
             sleep(1)
             element = temp_wait.until(EC.presence_of_element_located((by, path)))
             cls.actions.click(element).perform()
             cls.actions.reset_actions()
         except UnexpectedAlertPresentException:
-            # Handle unexpected alert
+            cls.actions.release()
+            cls.actions.reset_actions()
             try:
-                alert = cls.wait.until(EC.alert_is_present())
-                if alert:
-                    alert_text = alert.text
-                    print("Alert Text:", alert_text)
-                    alert.accept()  # Dismiss the alert
-                    # Handle the alert text as needed
-            except TimeoutException:
-                print("Timeout while waiting for alert.")
-                # Handle the timeout as needed
+                count = 0
+                element = temp_wait.until(EC.presence_of_element_located((by, path)))
+                while True:
+                    count =+ 1
+                    cls.actions.click(element).perform()
+                    cls.actions.reset_actions()
+                    if count >= 3:
+                        raise UnexpectedAlertPresentException
 
+            except TimeoutException as e:
+                message = f"Timeout while waiting for alert. when clicking on {path}"
+                print(message)
+                # Handle the timeout as needed
+                raise UnexpectedAlertPresentException(message) from e
         except TimeoutException:
             print("Timeout while waiting for element.")
-
         except Exception as e:
             print("An error occurred:", e)
 
@@ -214,6 +217,7 @@ class OneForm:
 
     @classmethod
     def config_active_campaign(cls, active, date):
+        path = ''
         month, day, year = date.split("-")
         # open the activeCampaign connectio editor
         cls.click(By.XPATH, '/html/body/div[3]/div[2]/div[3]/div[2]/div[2]/div[1]/div[8]/div[1]/div/div[2]/div[1]')
@@ -247,10 +251,9 @@ class OneForm:
         for element in elements:
             if element.text == active:
                 element.click()
-        cls.click(By.XPATH, '//*[@id="gmf_100000"]/div[4]/span[1]')
-        sleep(3)
-        cls.click(By.XPATH, '//*[@id="enviar_formulario_ajax"]')
-        sleep(1)
+        print('//*[@id="enviar_formulario_ajax"]')
+        cls.click(By.XPATH,'//*[@id="enviar_formulario_ajax"]')
+        print('/html/body/div[3]/div[2]/div[2]/div/div[1]/div[1]/div[4]/div[2]/div')
         cls.click(By.XPATH, '/html/body/div[3]/div[2]/div[2]/div/div[1]/div[1]/div[4]/div[2]/div')
 
     @classmethod
