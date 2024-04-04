@@ -5,7 +5,8 @@ from Archives.python.driver import DriveMethods
 from Archives.python.data_treatment import City
 from Archives.python.data_treatment import Content
 from tkinter import messagebox
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, UnexpectedAlertPresentException
+from datetime import datetime
 
 
 def error_popup(content):
@@ -62,6 +63,8 @@ def handle_model_register(model_name, model_link, model_archive):
 
 
 def handle_lp_generation(data):
+    now = datetime.now()
+    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     with open("Archives/Assets/Data/city.csv", "r", encoding="utf-8") as f:
         city = f.readlines()
     if not any(data):
@@ -70,8 +73,8 @@ def handle_lp_generation(data):
     cookies = DriveMethods.drive_gen()
 
     for line in data:
+        new_drive = DriveMethods.clean_driver(cookies)
         try:
-            new_drive = DriveMethods.clean_driver(cookies)
             print(line)
             handler = OneForm(new_drive)
             handler.page_clone(line[0])
@@ -80,7 +83,7 @@ def handle_lp_generation(data):
             handler.edit_page(line)
             handler.insert_thanks_page_link(line[5])
             handler.config_active_campaign(line[6], line[4])
-            #handler.publish_page(line[3].strip()[:-5])
+            handler.publish_page(line[3].strip()[:-5])
 
             # Remove the line containing the city name from the "city" list
             city = [c for c in city if line[3] not in c]
@@ -91,9 +94,20 @@ def handle_lp_generation(data):
             new_drive.quit()
         except TimeoutException as e:
             with open("Erros.log", 'a', encoding="utf-8") as f:
-                f.write(f"{line[3]}\n\n{str(e)}\n\n\n\n\n")
+                f.write(f"{line[3]} - {dt_string}\n\n{str(e)}\n\n\n\n\n")
+                new_drive.quit()
                 continue
-
+        except UnexpectedAlertPresentException as e:
+            with open("Erros.log", 'a', encoding="utf-8") as f:
+                f.write(f"{line[3]} - {dt_string}\n\n{str(e)}\n\n\n\n\n")
+                new_drive.quit()
+                continue
+        except StaleElementReferenceException as e:
+            with open("Erros.log", 'a', encoding="utf-8") as f:
+                f.write(f"{line[3]} - {dt_string}\n\n{str(e)}\n\n\n\n\n")
+                new_drive.quit()
+                print(str(e))
+                continue
 
 City.input_generator()
 
