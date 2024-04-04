@@ -84,13 +84,6 @@ class MinhaInterface:
             command=self.city_register
         )
 
-        # model_register = tk.Button(
-        #     main_menu,
-        #     text="Cadastrar Modelo",
-        #     font=self.main_font,
-        #     command=self.model_register
-        # )
-
         landing_page_generator = tk.Button(
             main_menu,
             text="Gerador de LPs",

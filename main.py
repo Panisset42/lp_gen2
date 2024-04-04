@@ -5,11 +5,12 @@ from Archives.python.driver import DriveMethods
 from Archives.python.data_treatment import City
 from Archives.python.data_treatment import Content
 from tkinter import messagebox
-from time import sleep
 from selenium.common.exceptions import TimeoutException
+
 
 def error_popup(content):
     messagebox.showinfo("ATENÇÃO", f"Você esqueceu de preencher: {content}")
+
 
 def handle_login_attempt(username, password):
     if username == "captacao" and password == "autenticar2024":
@@ -79,7 +80,7 @@ def handle_lp_generation(data):
             handler.edit_page(line)
             handler.insert_thanks_page_link(line[5])
             handler.config_active_campaign(line[6], line[4])
-            handler.publish_page(line[3].strip()[:-5])
+            #handler.publish_page(line[3].strip()[:-5])
 
             # Remove the line containing the city name from the "city" list
             city = [c for c in city if line[3] not in c]
@@ -89,7 +90,7 @@ def handle_lp_generation(data):
                 f.writelines(city)
             new_drive.quit()
         except TimeoutException as e:
-            with open("Erros.log",'a', encoding="utf-8") as f:
+            with open("Erros.log", 'a', encoding="utf-8") as f:
                 f.write(f"{line[3]}\n\n{str(e)}\n\n\n\n\n")
                 continue
 
@@ -104,4 +105,3 @@ EventPublisher.subscribe("lp_generation_confirm_button_pressed", handle_lp_gener
 app = MinhaInterface()
 app.login_screen()
 app.janela.mainloop()
-
