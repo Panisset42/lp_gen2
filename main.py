@@ -1,7 +1,9 @@
 # main.py
+import threading
+
 from Archives.python.layout import MinhaInterface, EventPublisher
 from Archives.python.models.OneForm import OneForm
-from Archives.python.driver import DriveMethods
+from Archives.python.driver import DriveMethods, NotFoundException
 from Archives.python.data_treatment import City
 from Archives.python.data_treatment import Content
 from tkinter import messagebox
@@ -10,7 +12,7 @@ from datetime import datetime
 
 
 def error_popup(content):
-    messagebox.showinfo("ATENÇÃO", f"Você esqueceu de preencher: {content}")
+    messagebox.showinfo("ATENÇÃO", message=content)
 
 
 def handle_login_attempt(username, password):
@@ -21,19 +23,19 @@ def handle_login_attempt(username, password):
 
 def handle_city_register(city_name, city_date, model, link, screen):
     if Content.is_empty(city_name):
-        error_popup("O campo cidade")
+        error_popup("Você esqueceu de preencher: O campo cidade")
         MinhaInterface.city_register(screen)
         return
     elif Content.is_empty(city_date):
-        error_popup("O campo data do evento")
+        error_popup("Você esqueceu de preencher: O campo data do evento")
         MinhaInterface.city_register(screen)
         return
     elif Content.is_empty(model):
-        error_popup("O campo modelo")
+        error_popup("Você esqueceu de preencher: O campo modelo")
         MinhaInterface.city_register(screen)
         return
     elif Content.is_empty(link):
-        error_popup("O campo link")
+        error_popup("Você esqueceu de preencher: O campo link")
         MinhaInterface.city_register(screen)
         return
     month, day, year = city_date.split("/")
@@ -61,14 +63,13 @@ def handle_model_register(model_name, model_link, model_archive):
     print(model_link)
     print(model_archive)
 
-
-def handle_lp_generation(data):
+def lp_gen(data):
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     with open("Archives/Assets/Data/city.csv", "r", encoding="utf-8") as f:
         city = f.readlines()
     if not any(data):
-        error_popup("Cadastro de cidades")
+        error_popup("Você esqueceu de preencher: Cadastro de cidades")
         return
     cookies = DriveMethods.drive_gen()
 
@@ -108,6 +109,19 @@ def handle_lp_generation(data):
                 new_drive.quit()
                 print(str(e))
                 continue
+        except NotFoundException as e:
+            error_popup(e.message)
+            with open("Erros.log", 'a', encoding="utf-8") as f:
+                f.write(f"{line[3]} - {dt_string}\n\n{str(e)}\n\n\n\n\n")
+                new_drive.quit()
+                print(str(e))
+            continue
+
+
+def handle_lp_generation(data):
+    thread = threading.Thread(target=lp_gen, args=(data,))
+    thread.daemon = True
+    thread.start()
 
 City.input_generator()
 

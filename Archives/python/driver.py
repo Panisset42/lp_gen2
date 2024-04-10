@@ -1,8 +1,7 @@
-import selenium.common.exceptions as SE
+from time import sleep
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from time import sleep
-from selenium.webdriver.chrome.options import Options
 
 
 class DriveMethods:
@@ -11,10 +10,10 @@ class DriveMethods:
         # get login info
         user_account = "polozi.scripts@gmail.com"
         user_pass = "RnUYz91K"
-        #chrome_options = Options()
+        # chrome_options = Options()
 
         # Add the --headless option
-        #chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
 
         # Create the headless Chrome driver
         driver = webdriver.Chrome()
@@ -29,9 +28,9 @@ class DriveMethods:
         cookies = driver.get_cookies()
         # returning driver
         return cookies
+
     @classmethod
     def clean_driver(cls, cookies):
-
         # Create a new driver
         driver = webdriver.Chrome()
 
@@ -41,3 +40,8 @@ class DriveMethods:
             print(cookie)
             driver.add_cookie(cookie)
         return driver
+
+class NotFoundException(Exception):
+    def __init__(self, message="Value not found"):
+        self.message = message
+        super().__init__(self.message)

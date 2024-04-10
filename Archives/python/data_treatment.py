@@ -2,6 +2,7 @@
 import unicodedata
 import re
 
+
 class City:
     month_dict = {'01': 'Janeiro', '02': 'Fevereiro', '03': 'Março', '04': 'Abril', '05': 'Maio',
                   '06': 'Junho',

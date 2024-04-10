@@ -5,6 +5,8 @@ from tkcalendar import DateEntry
 class MinhaInterface:
     def __init__(self):
         # configuring main screen
+        self.form_holder = None
+        self.register_frame = None
         self.options = None
         self.entry_model = None
         self.janela = tk.Tk()
@@ -90,8 +92,14 @@ class MinhaInterface:
             font=self.main_font,
             command=self.landing_page_generator
         )
+        content_actualize = tk.Button(
+            main_menu,
+            text="Cadastrar tags",
+            font=self.main_font,
+            command=self.content_actualize
+        )
         city_register.grid(row=2, sticky="ew", pady=5)
-        # model_register.grid(row=3, sticky="ew", pady=5)
+        content_actualize.grid(row=3, sticky="ew", pady=5)
         landing_page_generator.grid(row=4, sticky="ew", pady=5)
         # setting up main content area
         self.main_frame.destroy()
@@ -112,8 +120,12 @@ class MinhaInterface:
             # Creating a form-holder
             self.form_holder = tk.Frame(self.register_frame, bg="#FEA500")
             self.form_holder.place(relx=0.5, rely=0.5, relwidth="0.5", relheight="0.7", anchor=tk.CENTER)
-        except:
+        except Exception:
             pass
+
+    def content_actualize(self):
+
+        pass
 
     def city_register(self):
         self.options = tk.StringVar()

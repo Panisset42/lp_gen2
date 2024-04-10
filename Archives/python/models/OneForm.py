@@ -1,5 +1,5 @@
 from time import sleep
-
+from Archives.python.driver import NotFoundException
 import pyautogui
 import pyperclip
 from selenium.webdriver.common.by import By
@@ -40,7 +40,7 @@ class OneForm:
                 count = 0
                 element = temp_wait.until(EC.presence_of_element_located((by, path)))
                 while True:
-                    count =+ 1
+                    count = + 1
                     cls.actions.click(element).perform()
                     cls.actions.reset_actions()
                     if count >= 3:
@@ -217,7 +217,6 @@ class OneForm:
 
     @classmethod
     def config_active_campaign(cls, active, date):
-        path = ''
         month, day, year = date.split("-")
         # open the activeCampaign connectio editor
         cls.click(By.XPATH, '/html/body/div[3]/div[2]/div[3]/div[2]/div[2]/div[1]/div[8]/div[1]/div/div[2]/div[1]')
@@ -230,11 +229,16 @@ class OneForm:
         sleep(3)
         # Select the list
         sleep(25)
+
+        element = None
         list_name = f"PALESTRA ABERTA - {cls.month_dict[month][:3].upper()}/{year}".strip()
         print(list_name)
+        if element is None:
+            raise NotFoundException(f"A lista \"{list_name}\" não foi encontrada")
         element = WebDriverWait(cls.drive, 120).until(EC.presence_of_element_located(
             (By.XPATH, f"//*[contains(text(), '{list_name}')]")))
         element.click()
+
         sleep(2)
         element.click()
         sleep(2)
@@ -252,7 +256,7 @@ class OneForm:
             if element.text == active:
                 element.click()
         print('//*[@id="enviar_formulario_ajax"]')
-        cls.click(By.XPATH,'//*[@id="enviar_formulario_ajax"]')
+        cls.click(By.XPATH, '//*[@id="enviar_formulario_ajax"]')
         print('/html/body/div[3]/div[2]/div[2]/div/div[1]/div[1]/div[4]/div[2]/div')
         cls.click(By.XPATH, '/html/body/div[3]/div[2]/div[2]/div/div[1]/div[1]/div[4]/div[2]/div')
 
