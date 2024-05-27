@@ -2,21 +2,21 @@ from time import sleep
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 
 
 class DriveMethods:
     @classmethod
     def drive_gen(cls):
         # get login info
-        user_account = "polozi.scripts@gmail.com"
-        user_pass = "RnUYz91K"
+        user_account = ""
+        user_pass = ""
         # chrome_options = Options()
 
-        # Add the --headless option
-        # chrome_options.add_argument("--headless")
+        chrome_options = Options()
+        #chrome_options.add_argument("--headless")
+        driver = webdriver.Chrome(chrome_options)
 
-        # Create the headless Chrome driver
-        driver = webdriver.Chrome()
         driver.get('https://app.greatpages.com.br/login')
         # get camps and making login
         user_input = driver.find_element(By.XPATH, "//*[@id=\"usuario\"]")

@@ -92,14 +92,14 @@ class MinhaInterface:
             font=self.main_font,
             command=self.landing_page_generator
         )
-        content_actualize = tk.Button(
+        main_frame_setup = tk.Button(
             main_menu,
             text="Cadastrar tags",
             font=self.main_font,
-            command=self.content_actualize
+            command=self.main_frame_setup
         )
         city_register.grid(row=2, sticky="ew", pady=5)
-        content_actualize.grid(row=3, sticky="ew", pady=5)
+        main_frame_setup.grid(row=3, sticky="ew", pady=5)
         landing_page_generator.grid(row=4, sticky="ew", pady=5)
         # setting up main content area
         self.main_frame.destroy()
@@ -123,8 +123,35 @@ class MinhaInterface:
         except Exception:
             pass
 
-    def content_actualize(self):
+    def actualize_text_page(self):
+        # Set_up the main frame
+        self.main_frame_setup()
+        # set up data entry
+        label_name = tk.Label(self.form_holder, text="Name:", bg="#FEA500")
+        self.entry_name = tk.Entry(self.form_holder)
 
+        label_archive = tk.Label(self.form_holder, text="Arquivo:", bg="#FEA500")
+        self.entry_archive = tk.Entry(self.form_holder)
+
+        label_link = tk.Label(self.form_holder, text="Link:", bg="#FEA500")
+        self.entry_link = tk.Entry(self.form_holder)
+
+        model_register_button = tk.Button(self.form_holder, text="Cadastrar Modelo",
+                                          command=self.model_register_clicked)
+
+        # placement for form elements
+        label_name.place(relx=0.4, rely=0.3, relwidth="0.3", relheight="0.05", anchor=tk.CENTER)
+        self.entry_name.place(relx=0.6, rely=0.3, relwidth="0.3", relheight="0.05", anchor=tk.CENTER)
+
+        label_archive.place(relx=0.4, rely=0.4, relwidth="0.3", relheight="0.05", anchor=tk.CENTER)
+        self.entry_archive.place(relx=0.6, rely=0.4, relwidth="0.3", relheight="0.05", anchor=tk.CENTER)
+
+        label_link.place(relx=0.4, rely=0.5, relwidth="0.3", relheight="0.05", anchor=tk.CENTER)
+        self.entry_link.place(relx=0.6, rely=0.5, relwidth="0.3", relheight="0.05", anchor=tk.CENTER)
+
+        model_register_button.place(relx=0.5, rely=0.7, relwidth="0.3", relheight="0.05", anchor=tk.CENTER)
+        pass
+    def actualize_text_page_clicked(self):
         pass
 
     def city_register(self):

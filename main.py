@@ -83,7 +83,7 @@ def lp_gen(data):
             handler.rename_page(line[2])
             handler.edit_page(line)
             handler.insert_thanks_page_link(line[5])
-            handler.config_active_campaign(line[6], line[4])
+            #handler.config_active_campaign(line[6], line[4])
             handler.publish_page(line[3].strip()[:-5])
 
             # Remove the line containing the city name from the "city" list
@@ -110,10 +110,10 @@ def lp_gen(data):
                 print(str(e))
                 continue
         except NotFoundException as e:
-            error_popup(e.message)
+            #error_popup(e.message)
             with open("Erros.log", 'a', encoding="utf-8") as f:
                 f.write(f"{line[3]} - {dt_string}\n\n{str(e)}\n\n\n\n\n")
-                new_drive.quit()
+            #    new_drive.quit()
                 print(str(e))
             continue
 

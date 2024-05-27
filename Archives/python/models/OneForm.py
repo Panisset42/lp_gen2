@@ -233,8 +233,8 @@ class OneForm:
         element = None
         list_name = f"PALESTRA ABERTA - {cls.month_dict[month][:3].upper()}/{year}".strip()
         print(list_name)
-        if element is None:
-            raise NotFoundException(f"A lista \"{list_name}\" não foi encontrada")
+        #if element is None:
+        #    raise NotFoundException(f"A lista \"{list_name}\" não foi encontrada")
         element = WebDriverWait(cls.drive, 120).until(EC.presence_of_element_located(
             (By.XPATH, f"//*[contains(text(), '{list_name}')]")))
         element.click()
@@ -258,10 +258,11 @@ class OneForm:
         print('//*[@id="enviar_formulario_ajax"]')
         cls.click(By.XPATH, '//*[@id="enviar_formulario_ajax"]')
         print('/html/body/div[3]/div[2]/div[2]/div/div[1]/div[1]/div[4]/div[2]/div')
-        cls.click(By.XPATH, '/html/body/div[3]/div[2]/div[2]/div/div[1]/div[1]/div[4]/div[2]/div')
 
     @classmethod
     def publish_page(cls, name):
+        cls.click(By.XPATH, '/html/body/div[3]/div[2]/div[2]/div/div[1]/div[1]/div[4]/div[2]/div')
+
         sleep(10)
         element = WebDriverWait(cls.drive, 30).until(
             EC.element_to_be_clickable((By.XPATH, '//*[@id="admin_topo_basico_voltar"]')))
